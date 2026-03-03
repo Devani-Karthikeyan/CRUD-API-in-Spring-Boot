@@ -5,6 +5,7 @@ import com.codewithdevani.store.exceptions.ResourceNotFoundException;
 import com.codewithdevani.store.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
 //    @GetMapping
 //    public String getUsers(){
 //        return "Hello Devani";
@@ -25,6 +27,11 @@ public class UserController {
 //    }
     @Autowired // Spring automatically create the object
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
     @GetMapping
     public List<UserEntity> getUsers(){
         return userRepository.findAll();
@@ -32,6 +39,7 @@ public class UserController {
     }
     @PostMapping
     public UserEntity createUser(@RequestBody UserEntity user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
 
     }
